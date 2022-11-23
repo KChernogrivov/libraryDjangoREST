@@ -1,0 +1,38 @@
+
+#include "linear_systems.h"
+
+void gauss(const std::vector<std::vector<float>>& matrix_,
+	std::vector<float>& x)
+{
+    std::vector<std::vector<float>> a(matrix_);
+
+    const size_t n = a.size();
+
+    for (size_t k = 0; k < n; ++k)
+    {
+        auto temp = a[k][k];
+    	for (size_t j = k; j <= n; ++j)
+    	{
+    	    a[k][j] /= temp;
+    	}
+    	
+    	for (size_t i = k + 1; i < n; ++i)
+    	{
+    	    temp = a[i][k];
+        	for (size_t j = k; j <= n; ++j)
+        	{
+        	    a[i][j] -= temp * a[k][j];
+        	}
+    	}
+    }
+	
+	for (size_t k = n - 1; k != -1; --k)
+	{
+	    float sum = 0;
+	    for (size_t j = k + 1; j < n; ++j)
+	    {
+	        sum += a[k][j] * x[j];
+	    }
+	    x[k] = a[k][n] - sum;
+	}
+}
