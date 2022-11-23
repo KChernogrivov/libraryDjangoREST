@@ -64,3 +64,6 @@ class Book(models.Model):
         verbose_name = 'Книга'
         verbose_name_plural = 'Книги'
 
+    def __str__(self):
+        return '{} / {} / {}'.format(self.title, self.author, self.publisher, )
+
