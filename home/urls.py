@@ -3,6 +3,7 @@ from . import views
 
 urlpatterns = [
     path(r'auth/', include('djoser.urls')),
+    path(r'auth/', include('djoser.urls.authtoken')),
 
     path('books/create', views.BookCreate.as_view()),
     path('books/', views.book_list),

@@ -1,37 +1,28 @@
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from rest_framework import generics
+from rest_framework import generics, permissions
 from rest_framework.generics import CreateAPIView
 from rest_framework.parsers import JSONParser, FormParser, MultiPartParser, FileUploadParser
 from rest_framework.response import Response
 
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication
-from rest_framework.permissions import IsAdminUser
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication, TokenAuthentication
+import rest_framework.permissions
 from rest_framework.authtoken.models import Token
 
 from .models import Book, Author, User
 from .serializers import BookSerializer, AuthorSerializer, UserSerializer
 
-import base64
-from django.core.files.base import ContentFile
-
 
 class BookCreate(generics.ListCreateAPIView):
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
-    permission_classes = [IsAdminUser]
+    authentication_classes = [SessionAuthentication, BasicAuthentication, TokenAuthentication]
+    permission_classes = [permissions.IsAdminUser]
 
     queryset = Book.objects.all()
     parser_classes = [MultiPartParser, FormParser]
     serializer_class = BookSerializer
 
     def post(self, request, *args, **kwargs):
-        qs = Book.objects.all().filter(title=request.data.title)
-        print(request.data.category == 'художественное произведение')
-
         return self.create(request, *args, **kwargs)
-
-
-
 
 
 @csrf_exempt
