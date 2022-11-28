@@ -28,6 +28,15 @@ class BookCreate(generics.ListCreateAPIView):
         return self.create(request, *args, **kwargs)
 
 
+class BookUpdate(generics.UpdateAPIView):
+    authentication_classes = [SessionAuthentication, BasicAuthentication, TokenAuthentication]
+    permission_classes = [permissions.IsAdminUser]
+
+    queryset = Book.objects.all()
+    parser_classes = [MultiPartParser, FormParser]
+    serializer_class = BookSerializer
+
+
 class AuthorCreate(generics.ListCreateAPIView):
     authentication_classes = [SessionAuthentication, BasicAuthentication, TokenAuthentication]
     permission_classes = [permissions.IsAdminUser]
