@@ -28,6 +28,18 @@ class BookCreate(generics.ListCreateAPIView):
         return self.create(request, *args, **kwargs)
 
 
+class AuthorCreate(generics.ListCreateAPIView):
+    authentication_classes = [SessionAuthentication, BasicAuthentication, TokenAuthentication]
+    permission_classes = [permissions.IsAdminUser]
+
+    queryset = Author.objects.all()
+    parser_classes = [MultiPartParser, FormParser]
+    serializer_class = AuthorSerializer
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+
 class BookListView(generics.ListAPIView):
     serializer_class = BookSerializer
     filter_backends = [DjangoFilterBackend]
