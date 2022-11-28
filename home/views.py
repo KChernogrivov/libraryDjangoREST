@@ -1,9 +1,12 @@
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import generics, permissions
+from rest_framework.filters import SearchFilter
 from rest_framework.generics import CreateAPIView
 from rest_framework.parsers import JSONParser, FormParser, MultiPartParser, FileUploadParser
 from rest_framework.response import Response
+
+from django_filters.rest_framework import DjangoFilterBackend
 
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication, TokenAuthentication
 import rest_framework.permissions
@@ -25,12 +28,13 @@ class BookCreate(generics.ListCreateAPIView):
         return self.create(request, *args, **kwargs)
 
 
-@csrf_exempt
-def book_list(request):
-    if request.method == 'GET':
-        books = Book.objects.all()
-        serializer = BookSerializer(books, many=True)
-        return JsonResponse(serializer.data, safe=False)
+class BookListView(generics.ListAPIView):
+    serializer_class = BookSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['author__name', 'title', 'genre']
+
+    def get_queryset(self):
+        return Book.objects.all()
 
 
 @csrf_exempt
